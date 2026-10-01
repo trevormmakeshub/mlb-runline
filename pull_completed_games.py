@@ -74,14 +74,17 @@ def main() -> None:
         if game.get("away_score") is None or game.get("home_score") is None:
             continue
         seen.add(game_id)
+        away_score = int(game["away_score"])
+        home_score = int(game["home_score"])
         rows.append(
             {
                 "game_id": game_id,
                 "date": game["game_date"],
                 "away": game.get("away_name", ""),
                 "home": game.get("home_name", ""),
-                "away_score": int(game["away_score"]),
-                "home_score": int(game["home_score"]),
+                "away_score": away_score,
+                "home_score": home_score,
+                "home_cover": int(home_score - away_score > 1.5),
                 "status": game["status"],
                 "game_type": game["game_type"],
             }
@@ -89,10 +92,36 @@ def main() -> None:
 
     frame = pd.DataFrame(rows).sort_values(["date", "game_id"])
     frame.to_csv(OUT, index=False)
-    print(f"min date {frame['date'].min()}")
-    print(f"max date {frame['date'].max()}")
+    data_min = frame["date"].min()
+    data_max = frame["date"].max()
+    notes = Path(__file__).resolve().parent / "NOTES.md"
+    notes.write_text(
+        "This repo predicts whether an MLB team covers the run line, not who wins the game.\n\n"
+        "Completed games were pulled from the MLB Stats API. A home cover is labeled when "
+        "home score minus away score is greater than 1.5.\n\n"
+        f"Minimum date: {data_min}\n"
+        f"Maximum date: {data_max}\n"
+        f"Row count: {len(frame)}\n\n"
+        "mlb_game_predictor features and predictions were not copied.\n",
+        encoding="utf-8",
+    )
+    print(f"min date {data_min}")
+    print(f"max date {data_max}")
     print(f"rows {len(frame)}")
+    print(f"home_cover {int(frame['home_cover'].sum())}")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as exc:
+        notes = Path(__file__).resolve().parent / "NOTES.md"
+        notes.write_text(
+            "This repo predicts whether an MLB team covers the run line, not who wins the game.\n\n"
+            "The MLB Stats API pull failed on 2026-09-30:\n"
+            f"{type(exc).__name__}: {exc}\n"
+            "mlb_game_predictor features and predictions were not copied. This branch was not pushed.\n",
+            encoding="utf-8",
+        )
+        print(f"FAIL {type(exc).__name__}: {exc}")
+        raise SystemExit(1)
