@@ -2,7 +2,7 @@
 
 The dataset builder starts on 2023-03-30 and then asks prop-odds.com for
 run-line prices. This script does not call that API. It keeps the same
-start date and stops on 2026-09-30, and it writes only final games.
+start date and stops on 2026-11-07, and it writes only final games.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ import requests
 import statsapi
 
 START = "2023-03-30"
-THROUGH = "2026-09-30"
+THROUGH = "2026-11-07"
 COMPLETED = {"Final", "Game Over", "Completed Early"}
 GAME_TYPES = {"R", "F", "D", "L", "W"}
 OUT = Path(__file__).resolve().parent / "completed_games.csv"
@@ -118,7 +118,7 @@ if __name__ == "__main__":
         notes = Path(__file__).resolve().parent / "NOTES.md"
         notes.write_text(
             "This repo predicts whether an MLB team covers the run line, not who wins the game.\n\n"
-            "The MLB Stats API pull failed on 2026-09-30:\n"
+            "The MLB Stats API pull failed on 2026-11-07:\n"
             f"{type(exc).__name__}: {exc}\n"
             "mlb_game_predictor features and predictions were not copied. This branch was not pushed.\n",
             encoding="utf-8",
