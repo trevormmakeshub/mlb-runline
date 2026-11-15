@@ -6,4 +6,4 @@ Minimum date: 2023-03-30
 Maximum date: 2026-10-28
 Row count: 9889
 
-mlb_game_predictor features and predictions were not copied. The schedule was checked through 2026-11-07. This does not price a bet.
+mlb_game_predictor features and predictions were not copied. The schedule was checked through 2026-11-14. The MLB Stats API listed 0 games from 2026-10-29 through 2026-11-14. This does not price a bet.
